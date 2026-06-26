@@ -1,2 +1,4 @@
 rets_openhouse.sql
 rets_property.sql
+backend/node_modules
+.env

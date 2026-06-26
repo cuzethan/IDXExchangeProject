@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                          /* Output modern JS engine features */
+    "module": "NodeNext",                        /* Standard for Node.js ESM resolution */
+    "moduleResolution": "NodeNext",              /* Required pairing with NodeNext module format */
+    "rootDir": "./src",                          /* Locate source files here */
+    "outDir": "./dist",                          /* Direct compiled JS artifacts here */
+    "esModuleInterop": true,                     /* Emits helper code for importing CommonJS modules */
+    "forceConsistentCasingInFileNames": true,    /* Enforce cross-platform file name constraints */
+    "strict": true,                              /* Strict typechecking flags enabled */
+    "skipLibCheck": true                         /* Skips checking types declaration files */
+  },
+  "include": ["src/**/*"]                        /* Compile only source files */
+}
