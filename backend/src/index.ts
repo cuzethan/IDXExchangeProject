@@ -1,28 +1,10 @@
 import express from "express";
-//import cors from "cors";
-import dotenv from "dotenv";
-import mysql from "mysql2/promise";
-
-dotenv.config();
+import startPoint from "./routes/startPoint.js";
 
 const app = express();
 const port = 5000;
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-});
-
-app.get("/api/health", async (_req, res) => {
-    try {
-        await pool.query("SELECT 1");
-        res.json({ status: "ok", database: "connected" });
-    } catch {
-        res.status(500).json({ status: "error", database: "disconnected" });
-    }
-});
+app.use("/api", startPoint)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
