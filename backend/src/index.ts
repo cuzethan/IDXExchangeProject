@@ -1,3 +1,4 @@
+import "./env.js";
 import express from "express";
 import startPoint from "./routes/startPoint.js";
 
