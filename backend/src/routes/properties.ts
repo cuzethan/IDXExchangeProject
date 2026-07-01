@@ -79,7 +79,6 @@ router.get('/', async(req: Request, res: Response) => {
     const countQuery = 'SELECT COUNT(*) AS total FROM rets_property' + whereClause;
 
     const [rows] = await pool.query(countQuery, params);
-    console.log(rows);
     const total = (rows as { total: number }[])[0].total;
 
     if (limit > total) {
