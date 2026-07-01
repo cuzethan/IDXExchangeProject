@@ -1,16 +1,9 @@
 import express, { Request, Response } from "express";
-import type { RowDataPacket } from "mysql2";
 const router = express.Router();
 
 import pool from "../db/database.js";
 
 router.get('/', async(req: Request, res: Response) => {
-
-    interface TotalRow extends RowDataPacket {
-        total: number;
-    }
-    const [totalResult] = await pool.query<TotalRow[]>("SELECT COUNT(*) AS total FROM rets_property");
-    const total = totalResult[0].total;
 
     let limit = 10;
     let offset = 0;
@@ -33,7 +26,6 @@ router.get('/', async(req: Request, res: Response) => {
                 limit = Number(value);
                 if (isNaN(limit)) return res.status(400).json({ error: `The ${key} parameter must be a number`});
                 if (limit <= 0) return res.status(400).json({ error: `The ${key} parameter must be greater than 0`});
-                if (limit > total) return res.status(400).json({ error: `The ${key} parameter must be less than the total number of properties`});
                 break;
             case 'offset':
                 offset = Number(value);
@@ -83,8 +75,18 @@ router.get('/', async(req: Request, res: Response) => {
     }
 
     const whereClause = queryList.length > 0 ? ' WHERE ' + queryList.join(' AND ') : '';
-    const query = 'SELECT * FROM rets_property' + whereClause + ' LIMIT ? OFFSET ?';
 
+    const countQuery = 'SELECT COUNT(*) AS total FROM rets_property' + whereClause;
+
+    const [rows] = await pool.query(countQuery, params);
+    console.log(rows);
+    const total = (rows as { total: number }[])[0].total;
+
+    if (limit > total) {
+        return res.status(400).json({ error: 'The limit parameter must be less than the total number of properties' });
+    }
+
+    const query = 'SELECT * FROM rets_property' + whereClause + ' LIMIT ? OFFSET ?';
     const [results] = await pool.query(query, [...params, limit, offset]);
 
     res.json({
